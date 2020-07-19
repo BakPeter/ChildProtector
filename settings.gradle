@@ -1,0 +1,2 @@
+rootProject.name='ChildProtector'
+include ':app'
