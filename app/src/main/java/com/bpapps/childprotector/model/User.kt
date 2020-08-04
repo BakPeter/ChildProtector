@@ -4,6 +4,6 @@ import java.util.*
 
 class User(
     val id: UUID,
-    var name: String
+    var name : String
 ) {
 }

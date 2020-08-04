@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ChildProtector</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="splash_screen_welcome_msg">Welcome to child protector App</string>
+    <string name="tv_created_by_msg"><u>created by pbApps</u></string>
 </resources>
