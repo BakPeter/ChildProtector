@@ -1,7 +1,46 @@
 <resources>
     <string name="app_name">ChildProtector</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="splash_screen_welcome_msg">Welcome to child protector App</string>
     <string name="tv_created_by_msg"><u>created by pbApps</u></string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="ok">OK</string>
+    <string name="exit_dialog_title">Exit App?</string>
+    <string name="exit_dialog_message">If you will exit the app, all data will be lost.</string>
+    <string name="tvAddConnectedUserMsg">Press \'+\' to add connected users, max %1$d </string>
+    <string name="user_type_chooser_dialog_title">Choose your user type</string>
+
+    <string-array name="user_types">
+        <item>Parent</item>
+        <item>Child</item>
+    </string-array>
+
+    <string name="registration_user_type_bar_title">Registration : User Type</string>
+    <string name="registration_child_type_bar_title">Child Registration</string>
+    <string name="registration_parent_type_bar_title">Parent Registration</string>
+    <string name="show_child_bar_title">ChildProtector</string>
+
+    <string name="et_parent_connectivity_code_hint">ENTER PARENT CONNECTIVITY CODE</string>
+    <string name="menu_clear_action_title">Clear</string>
+    <string name="menu_add_parent_action_title">Clear</string>
+    <string name="tv_add_parent_msg">Parents to connect(press \'+\' to add) :</string>
+    <string name="btn_register_child_text">Register Child</string>
+    <string name="ed_registration_phone_number_hint">Enter your phone number</string>
+    <string name="parent_code_dialog_title">Enter parent connectivity code</string>
+    <string name="parent_code_dialog_positive_button_text">Add Parent Code</string>
+    <string name="parent_code_dialog_negative_button_text">Cancel</string>
+    <string name="dialog_parent_connectivity_code_title"><u>Parent connectivity code</u></string>
+    <string name="error">Error</string>
+    <string name="missing_at_least_one_parent_code">MISSING AT LEAST ONE PARENT CODE</string>
+    <string name="missing_user_phone_number">MISSING USER PHONE NUMBER</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="start_monitoring_btn_text">start monitoring</string>
+    <string name="stop_monitoring_btn_text">stop monitoring</string>
+    <string name="notification_title">ChildProtector</string>
+    <string name="notification_content">Kepps Your Child Save</string>
+    <string name="child_monitored_ic_menu_title">Child Monitored</string>
+    <string name="chiled_beeing_protected">Chiled Beeing Protected</string>
+    <string name="child_is_being_monitored_msg">CHILD IS BEING MONITORED</string>
+
 </resources>

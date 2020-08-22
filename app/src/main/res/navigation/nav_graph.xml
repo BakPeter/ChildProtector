@@ -8,26 +8,58 @@
     <fragment
         android:id="@+id/splashScreenFragment"
         android:name="com.bpapps.childprotector.view.fragments.SplashScreenFragment"
-        android:label="fragment_splash_screen"
         tools:layout="@layout/fragment_splash_screen">
         <action
-            android:id="@+id/action_splashScreenFragment_to_registrationFragment"
-            app:destination="@id/registrationFragment" />
+            android:id="@+id/action_splashScreenFragment_to_registrationUserTypeFragment"
+            app:destination="@id/registrationUserTypeFragment" />
         <action
-            android:id="@+id/action_splashScreenFragment_to_showChildrenFragment"
-            app:destination="@id/showChildrenFragment" />
+            android:id="@+id/action_splashScreenFragment_to_showParentFragment"
+            app:destination="@id/showParentFragment" />
+        <action
+            android:id="@+id/action_splashScreenFragment_to_childViewFragment"
+            app:destination="@id/childViewFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/registrationFragment"
-        android:name="com.bpapps.childprotector.view.fragments.RegistrationFragment"
-        android:label="Registration"
-        tools:layout="@layout/fragment_registration">
+        android:id="@+id/registrationUserTypeFragment"
+        android:name="com.bpapps.childprotector.view.fragments.RegistrationUserTypeFragment"
+        android:label="@string/registration_user_type_bar_title"
+        tools:layout="@layout/fragment_registration_user_type">
+        <action
+            android:id="@+id/action_registrationUserTypeFragment_to_childRegistrationFragment"
+            app:destination="@id/childRegistrationFragment" />
+        <action
+            android:id="@+id/action_registrationUserTypeFragment_to_parentRegistrationFragment"
+            app:destination="@id/parentRegistrationFragment" />
     </fragment>
     <fragment
-        android:id="@+id/showChildrenFragment"
-        android:name="com.bpapps.childprotector.view.fragments.ShowChildrenFragment"
-        android:label="fragment_show_children"
-        tools:layout="@layout/fragment_show_children" />
+        android:id="@+id/childRegistrationFragment"
+        android:name="com.bpapps.childprotector.view.fragments.ChildRegistrationFragment"
+        android:label="@string/registration_child_type_bar_title"
+        tools:layout="@layout/fragment_child_registration" />
+    <fragment
+        android:id="@+id/parentRegistrationFragment"
+        android:name="com.bpapps.childprotector.view.fragments.ParentRegistrationFragment"
+        android:label="@string/registration_parent_type_bar_title"
+        tools:layout="@layout/fragment_parent_registration" />
+    <fragment
+        android:id="@+id/showParentFragment"
+        android:name="com.bpapps.childprotector.view.fragments.ShowParentFragment"
+        android:label="fragment_show_parent"
+        tools:layout="@layout/fragment_show_parent" />
+    <fragment
+        android:id="@+id/childViewFragment"
+        android:name="com.bpapps.childprotector.view.fragments.ChildViewFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_child_view">
+        <action
+            android:id="@+id/action_childViewFragment_to_watchSqlLocalDataBaseDebugFragment"
+            app:destination="@id/watchSqlLocalDataBaseDebugFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/watchSqlLocalDataBaseDebugFragment"
+        android:name="com.bpapps.childprotector.view.fragments.WatchSqlLocalDataBaseDebugFragment"
+        android:label="fragment_watch_sql_local_data_base_debug"
+        tools:layout="@layout/fragment_watch_sql_local_data_base_debug" />
 
 </navigation>

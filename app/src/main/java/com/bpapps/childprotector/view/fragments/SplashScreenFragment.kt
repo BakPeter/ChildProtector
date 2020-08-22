@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bpapps.childprotector.R
+import com.bpapps.childprotector.model.classes.UserType
 import com.bpapps.childprotector.view.MainActivity
 
 private const val TAG = "TAG.SplashScreenFragment"
@@ -21,12 +22,6 @@ class SplashScreenFragment : Fragment() {
     private lateinit var tvCreator: AppCompatTextView
     private var isRegistered = false
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        (activity as AppCompatActivity).supportActionBar?.hide()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,24 +39,35 @@ class SplashScreenFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Toast.makeText(requireContext(), "override fun onResume() ", Toast.LENGTH_SHORT).show()
 
-        val sharedPreferences =
+        (activity as AppCompatActivity).supportActionBar?.hide()
+
+        val sharedPref =
             activity?.getSharedPreferences(
                 MainActivity.PREFERENCES_FILE_NAME,
                 Context.MODE_PRIVATE
             )
 
-        isRegistered = sharedPreferences!!.getBoolean(
+        isRegistered = sharedPref!!.getBoolean(
             MainActivity.PREFERENCES_IS_REGISTERED,
             false
         )
 
         Handler().postDelayed({
+            val navHostFragment =
+                activity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment)
             if (isRegistered) {
-                findNavController().navigate(R.id.action_splashScreenFragment_to_showChildrenFragment)
+                when (sharedPref.getInt(MainActivity.PREFERENCES_USER_TYPE, UserType.CHILD)) {
+                    UserType.CHILD ->
+                        navHostFragment?.findNavController()
+                            ?.navigate(R.id.action_splashScreenFragment_to_childViewFragment)
+                   UserType.PARENT->
+                       navHostFragment?.findNavController()
+                           ?.navigate(R.id.action_splashScreenFragment_to_showParentFragment)
+                }
             } else {
-                findNavController().navigate(R.id.action_splashScreenFragment_to_registrationFragment)
+                navHostFragment?.findNavController()
+                    ?.navigate(R.id.action_splashScreenFragment_to_registrationUserTypeFragment)
             }
         }, resources.getInteger(R.integer.splash_screen_number_of_milliseconds_shower).toLong())
     }

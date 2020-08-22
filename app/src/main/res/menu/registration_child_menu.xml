@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/menu_action_clear_input"
+        android:title="@string/menu_clear_action_title"
+        android:icon="@drawable/ic_clear_data"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/menu_action_add_parent"
+        android:title="@string/menu_clear_action_title"
+        android:icon="@drawable/ic_add_parent"
+        app:showAsAction="ifRoom"/>
+
+</menu>

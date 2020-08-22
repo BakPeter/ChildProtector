@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flChildRegistrationRootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/app_layout_margins"
+    tools:context=".view.fragments.ChildRegistrationFragment">
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etChildPhoneNumber"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inputType="number|phone"
+        android:hint="@string/ed_registration_phone_number_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvAddParentMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/app_layout_margins"
+        android:layout_marginBottom="@dimen/app_layout_margins"
+        android:text="@string/tv_add_parent_msg"
+        android:textSize="@dimen/tv_add_parent_text_size"
+        app:layout_constraintBottom_toTopOf="@+id/rvParentsToConnect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etChildPhoneNumber" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvParentsToConnect"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnChildRegister"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAddParentMsg" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnChildRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_register_child_text"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pbChildRegistration"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminateTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

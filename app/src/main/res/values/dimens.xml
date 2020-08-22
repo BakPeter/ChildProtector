@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="app_layout_margins">8dp</dimen>
+    <dimen name="tv_add_parent_text_size">20sp</dimen>
+    <dimen name="progress_bar_size">80dp</dimen>
+    <dimen name="rv_item_text_size">20sp</dimen>
+    <dimen name="child_name_pic_dimens">80dp</dimen>
+    <dimen name="child_name_tv_text_size">30sp</dimen>
+</resources>
