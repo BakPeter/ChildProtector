@@ -24,7 +24,9 @@
     <string name="menu_clear_action_title">Clear</string>
     <string name="menu_add_parent_action_title">Clear</string>
     <string name="tv_add_parent_msg">Parents to connect(press \'+\' to add) :</string>
+    <string name="tv_add_child_msg">Children to protect(press \'+\' to add) :</string>
     <string name="btn_register_child_text">Register Child</string>
+    <string name="btn_register_parent_text">Register Parent</string>
     <string name="ed_registration_phone_number_hint">Enter your phone number</string>
     <string name="parent_code_dialog_title">Enter parent connectivity code</string>
     <string name="parent_code_dialog_positive_button_text">Add Parent Code</string>
@@ -33,14 +35,15 @@
     <string name="error">Error</string>
     <string name="missing_at_least_one_parent_code">MISSING AT LEAST ONE PARENT CODE</string>
     <string name="missing_user_phone_number">MISSING USER PHONE NUMBER</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="start_monitoring_btn_text">start monitoring</string>
     <string name="stop_monitoring_btn_text">stop monitoring</string>
     <string name="notification_title">ChildProtector</string>
-    <string name="notification_content">Kepps Your Child Save</string>
+    <string name="notification_content">Keps Your Child Save</string>
     <string name="child_monitored_ic_menu_title">Child Monitored</string>
-    <string name="chiled_beeing_protected">Chiled Beeing Protected</string>
+    <string name="chiled_beeing_protected">Child Being Protected</string>
     <string name="child_is_being_monitored_msg">CHILD IS BEING MONITORED</string>
+    <string name="menu_settings_action_title">settings</string>
+    <string name="clear_input_title">Clear input?</string>
+    <string name="clear_input_msg">Do you want to clear the entire input?</string>
 
 </resources>

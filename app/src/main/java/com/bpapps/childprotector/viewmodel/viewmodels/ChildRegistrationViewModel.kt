@@ -52,7 +52,7 @@ class ChildRegistrationViewModel : ViewModel() {
         }
 
         val connectedParents: ArrayList<ConnectedUser> =
-            _repository.getConnectedUsers(_parentsConnectivityCodes)
+            _repository!!.getConnectedUsers(_parentsConnectivityCodes)
         //TODO
 //        checkIfParentsConnected()
 //        at least one parent

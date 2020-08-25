@@ -9,7 +9,7 @@
     tools:context=".view.fragments.ChildRegistrationFragment">
 
     <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/etChildPhoneNumber"
+        android:id="@+id/etParentPhoneNumber"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="number|phone"
@@ -20,28 +20,28 @@
 
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvAddParentMsg"
+        android:id="@+id/tvAddChildMsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/app_layout_margins"
         android:layout_marginBottom="@dimen/app_layout_margins"
         android:text="@string/tv_add_parent_msg"
         android:textSize="@dimen/tv_add_parent_text_size"
-        app:layout_constraintBottom_toTopOf="@+id/rvParentsToConnect"
+        app:layout_constraintBottom_toTopOf="@+id/rvChildrenToConnect"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etChildPhoneNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/etParentPhoneNumber" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvParentsToConnect"
+        android:id="@+id/rvChildrenToConnect"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnChildRegister"
+        app:layout_constraintBottom_toTopOf="@+id/btnParentRegister"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAddParentMsg" />
+        app:layout_constraintTop_toBottomOf="@+id/tvAddChildMsg" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnChildRegister"
+        android:id="@+id/btnParentRegister"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/btn_register_child_text"
@@ -51,7 +51,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
-        android:id="@+id/pbChildRegistration"
+        android:id="@+id/pbParentRegistration"
         style="?android:attr/progressBarStyle"
         android:layout_width="@dimen/progress_bar_size"
         android:layout_height="@dimen/progress_bar_size"

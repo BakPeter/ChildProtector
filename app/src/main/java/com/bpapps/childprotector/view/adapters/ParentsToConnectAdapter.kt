@@ -42,7 +42,6 @@ class ParentsToConnectAdapter(
     }
 
     class ParentToConnectViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-
         val tvConnectivityCode: AppCompatTextView =
             v.findViewById(R.id.tvItemParentConnectivityCode)
         val ivDeleteConnectivityCode: AppCompatImageView =

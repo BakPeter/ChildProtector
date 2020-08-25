@@ -13,12 +13,15 @@ import android.content.pm.PackageManager
 import android.util.Log
 import com.bpapps.childprotector.App
 import com.bpapps.childprotector.R
+import com.bpapps.childprotector.model.ChildProtectorRepository
 import com.bpapps.childprotector.view.MainActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import java.util.*
 
 
 private const val TAG = "TAG.LocationJobService"
+private const val UPDATE_INTERVAL_MINUTES: Int = 15
 
 class AppJobService : JobService() {
     companion object {
@@ -27,6 +30,7 @@ class AppJobService : JobService() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var pm: PackageManager
+    private val repository = ChildProtectorRepository.getInstance()
 
     override fun onCreate() {
         super.onCreate()
@@ -69,6 +73,12 @@ class AppJobService : JobService() {
             fusedLocationClient.lastLocation.addOnCompleteListener { task ->
                 if (task.isSuccessful && task.result != null) {
                     Log.d(TAG, "location : ${task.result?.latitude} , ${task.result?.longitude}")
+                    repository?.addLocation(
+                        Date(task.result?.time!!),
+                        UUID.fromString(UUID.randomUUID().toString()),
+                        task.result?.latitude!!,
+                        task.result?.longitude!!
+                    )
                 } else {
                     Log.d(TAG, "getLastLocation:exception ${task.exception}")
                 }
@@ -76,7 +86,7 @@ class AppJobService : JobService() {
 
             val usageStatsManager: UsageStatsManager =
                 getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-            val startTime = currTime - 1000 * 60 * 15
+            val startTime = currTime - 1000 * 60 * UPDATE_INTERVAL_MINUTES
             val queryUsageStats: List<UsageStats> = usageStatsManager.queryUsageStats(
                 UsageStatsManager.INTERVAL_DAILY,
                 startTime,
@@ -90,7 +100,10 @@ class AppJobService : JobService() {
                     val appInfo = pm.getApplicationInfo(packageName, 0)
                     val appName = pm.getApplicationLabel(appInfo)
 
-                    Log.d(TAG, "query : packageName=${packageName}, appInfo=${appInfo}, appName=${appName}")
+                    Log.d(
+                        TAG,
+                        "query : packageName=${packageName}, appInfo=${appInfo}, appName=${appName}"
+                    )
                 }
             }
 

@@ -27,7 +27,7 @@ class AddParentCodeDialog(private val _callBack: IOnParentCodeEntered? = null) :
             val builder = AlertDialog.Builder(requireContext())
             return builder.setView(view)
                 .setCancelable(false)
-                .setPositiveButton(resources.getString(R.string.parent_code_dialog_positive_button_text)) { dialog, _ ->
+                .setPositiveButton(resources.getString(R.string.parent_code_dialog_positive_button_text)) { _, _ ->
                     Log.d(TAG, "CODE = ${_etEnteredCode.text}")
                     _callBack?.onCodeEntered(_etEnteredCode.text.toString())
                 }

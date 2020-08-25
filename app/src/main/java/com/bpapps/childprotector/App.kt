@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import com.bpapps.childprotector.model.ChildProtectorRepository
 
 class App : Application() {
 
@@ -16,6 +17,8 @@ class App : Application() {
         super.onCreate()
 
         createNotificationChannel()
+
+        ChildProtectorRepository.initialize(this)
     }
 
     private fun createNotificationChannel() {

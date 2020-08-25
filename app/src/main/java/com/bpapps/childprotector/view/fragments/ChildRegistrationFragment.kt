@@ -45,16 +45,16 @@ class ChildRegistrationFragment : Fragment(),
     ): View? {
         val view = inflater.inflate(R.layout.fragment_child_registration, container, false)
 
-        _etChildPhoneNumber = view.findViewById(R.id.etChildPhoneNumber)
+        _etChildPhoneNumber = view.findViewById(R.id.etParentPhoneNumber)
 
-        _rvParentsToConnect = view.findViewById(R.id.rvParentsToConnect)
+        _rvParentsToConnect = view.findViewById(R.id.rvChildrenToConnect)
         _rvParentsToConnect.layoutManager = LinearLayoutManager(context)
         _rvParentsToConnect.adapter =
             ParentsToConnectAdapter(viewModel.getParentsCodes(), requireContext())
 
-        _pbChildRegistration = view.findViewById(R.id.pbChildRegistration)
+        _pbChildRegistration = view.findViewById(R.id.pbParentRegistration)
 
-        _btnChildRegister = view.findViewById(R.id.btnChildRegister)
+        _btnChildRegister = view.findViewById(R.id.btnParentRegister)
         _btnChildRegister.setOnClickListener { _ ->
             val childPhoneNumber = _etChildPhoneNumber.text
             viewModel.setChildPhoneNumber(childPhoneNumber.toString())
