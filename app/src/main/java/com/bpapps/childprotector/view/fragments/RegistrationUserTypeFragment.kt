@@ -36,9 +36,9 @@ class RegistrationUserTypeFragment : Fragment() {
             R.string.ok,
             object : UserTypeChooserDialog.IOnUserTypeChosen {
                 @SuppressLint("LongLogTag")
-                override fun onUserChosen(userType: UserType) {
+                override fun onUserChosen(userType: @UserType Int) {
 //                    Log.d(TAG, userType.toString())
-                    when (userType.type) {
+                    when (userType) {
                         UserType.CHILD ->
                             findNavController().navigate(R.id.action_registrationUserTypeFragment_to_childRegistrationFragment)
                         else ->//UserType.PARENT ->

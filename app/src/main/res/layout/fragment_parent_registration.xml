@@ -8,6 +8,15 @@
     tools:context=".view.fragments.ChildRegistrationFragment">
 
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etParentName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/ed_registration_name_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etParentPhoneNumber"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -15,7 +24,7 @@
         android:inputType="number|phone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/etParentName" />
 
 
     <androidx.appcompat.widget.AppCompatTextView

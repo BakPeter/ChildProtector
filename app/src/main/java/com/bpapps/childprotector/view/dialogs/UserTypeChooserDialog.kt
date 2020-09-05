@@ -35,13 +35,13 @@ class UserTypeChooserDialog(
             .setPositiveButton(_okButtonTextResId) { dialog, _ ->
                 Log.d(TAG, selectedItem.toString())
                 val userType = if (selectedItem == 0) UserType.PARENT else UserType.CHILD
-                _callBack?.onUserChosen(UserType(userType))
+                _callBack?.onUserChosen(userType)
                 dialog.dismiss()
             }
             .create()
     }
 
     interface IOnUserTypeChosen {
-        fun onUserChosen(userType: UserType)
+        fun onUserChosen(userType: @UserType Int)
     }
 }

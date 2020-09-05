@@ -3,13 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragments.ShowParentFragment">
+    tools:context=".view.fragments.ParentViewFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSharedPrefTestShower"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#CC2121"
+        android:background="#00ACC1"
+        android:textColor="#F10259"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:text="show parent fragment" />
 
 </FrameLayout>

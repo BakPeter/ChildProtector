@@ -28,6 +28,7 @@
     <string name="btn_register_child_text">Register Child</string>
     <string name="btn_register_parent_text">Register Parent</string>
     <string name="ed_registration_phone_number_hint">Enter your phone number</string>
+    <string name="ed_registration_name_hint">Enter your name</string>
     <string name="parent_code_dialog_title">Enter parent connectivity code</string>
     <string name="parent_code_dialog_positive_button_text">Add Parent Code</string>
     <string name="parent_code_dialog_negative_button_text">Cancel</string>
@@ -40,10 +41,25 @@
     <string name="notification_title">ChildProtector</string>
     <string name="notification_content">Keps Your Child Save</string>
     <string name="child_monitored_ic_menu_title">Child Monitored</string>
-    <string name="chiled_beeing_protected">Child Being Protected</string>
+    <string name="child_being_protected">Child Being Protected</string>
     <string name="child_is_being_monitored_msg">CHILD IS BEING MONITORED</string>
     <string name="menu_settings_action_title">settings</string>
     <string name="clear_input_title">Clear input?</string>
     <string name="clear_input_msg">Do you want to clear the entire input?</string>
+    <string name="child_name">Child Name</string>
+    <string name="child_phone_number">Child Phone Number</string>
+    <string name="child_code_dialog_positive_button_text">Add Child</string>
+    <string name="child_input_error">Child name or phone number are wrong or empty</string>
+    <string name="add_child_dialog_title">Add Child</string>
+    <string name="error_parent_name_msg">Enter parent name</string>
+    <string name="missing_parent_name">Missing Parent Name</string>
+    <string name="missing_parent_phone_number">Missing Parent Phone Number</string>
+    <string name="enter_at_least_one_child">Enter at least one child</string>
+    <string name="registration_in_progress">Registration in progress...</string>
+    <string name="registration_finished">Registration Finished</string>
+    <string name="parent_connectivity_code_not_in_the_data_base">Parent connectivity code not in the data base</string>
+    <string name="error_loading_connected_user">ERROR_LOADING_CONNECTED_USER</string>
+    <string name="connectivity_code_not_in_the_data_base">No such cnnectivuty code</string>
+    <string name="phone_not_in_the_data_base">Child phone number not in the data base</string>
 
 </resources>

@@ -2,89 +2,99 @@ package com.bpapps.childprotector.viewmodel.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.bpapps.childprotector.model.ChildProtectorRepository
-import com.bpapps.childprotector.model.classes.ConnectedUser
+import com.bpapps.childprotector.model.classes.ChildProtectorException
 import com.bpapps.childprotector.model.classes.ErrorType
 import com.bpapps.childprotector.model.classes.User
 
 class ChildRegistrationViewModel : ViewModel() {
 
-    private val _repository = ChildProtectorRepository.getInstance()
+    //For DEBUG :
+    //parent connectivity code = 4AziVsFc0Vj0yXov7pdm
+    val debugConnectivityCode = "4AziVsFc0Vj0yXov7pdm"
 
-    private var _callBack: IParentConnectivityCodesUpdated? = null
+    private val repository = ChildProtectorRepository.getInstance()
+    private var callBack: IParentConnectivityCodesUpdated? = null
 
-    private var _user: User
-        set(value) {
-            _user = value
-        }
-        get() = _user
+    private val parentsConnectivityCodes: ArrayList<String> = arrayListOf()
+    private var childPhoneNumber: String? = null
 
-    private val _parentsConnectivityCodes: ArrayList<String> = arrayListOf()
-    private var _childPhoneNumber: String? = null
-
-    fun getParentsCodes(): ArrayList<String> = _parentsConnectivityCodes
+    fun getParentsCodes(): ArrayList<String> = parentsConnectivityCodes
     fun clearParentsCodes(callBack: IParentConnectivityCodesUpdated) {
-        _parentsConnectivityCodes.clear()
+        parentsConnectivityCodes.clear()
 
-        if (_callBack != null) callBack.codesUpdated(_parentsConnectivityCodes)
+        if (this.callBack != null) callBack.codesUpdated(parentsConnectivityCodes)
     }
 
     fun registerParentsCodeChangedCallBack(callBack: IParentConnectivityCodesUpdated) {
-        _callBack = callBack
+        this.callBack = callBack
     }
 
     fun unRegisterParentsCodeChangedCallBack() {
-        _callBack = null
+        callBack = null
     }
 
     fun addParentCode(code: String) {
-        _parentsConnectivityCodes.add(code)
-        _callBack?.codesUpdated(_parentsConnectivityCodes)
+        parentsConnectivityCodes.add(code)
+        callBack?.codesUpdated(parentsConnectivityCodes)
     }
 
     fun setChildPhoneNumber(childPhoneNumber: String?) {
-        _childPhoneNumber = childPhoneNumber
+        this.childPhoneNumber = childPhoneNumber
     }
 
-    fun registerChild(): ErrorType {
+    fun registerChild(
+        successCallback: IChildRegistrationSuccess?,
+        failureCallback: IChildRegistrationFailure?
+    ) {
         checkInputValidation().let { errorType ->
-            if (errorType.type != ErrorType.NOUN)
-                return errorType
+            if (errorType != ErrorType.NOUN) {
+                failureCallback?.onFailure(ChildProtectorException(errorType, "", null))
+                return
+            }
         }
 
-        val connectedParents: ArrayList<ConnectedUser> =
-            _repository!!.getConnectedUsers(_parentsConnectivityCodes)
-        //TODO
-//        checkIfParentsConnected()
-//        at least one parent
-//        if not return proper ErrorType
+        repository.registerChild(
+            parentsConnectivityCodes,
+            childPhoneNumber!!,
+            object : ChildProtectorRepository.IChildRegistrationFinished {
+                override fun onRegistrationSuccess(
+                    child: User,
+                    parents: ArrayList<User>
+                ) {
+                    successCallback?.onSuccesses(child, parents)
+                }
 
-//        val childId = connectedParents[0]._childId
-//        val user: User? = _repository.getUser(childId)
-//
-//        if (user == null) {
-//            ErrorType(ErrorType.USER_NOT_IN_THE_DATA_BASE)
-//        }
-
-        return ErrorType(ErrorType.NOUN)
+                override fun onRegistrationFailure(error: ChildProtectorException) {
+                    failureCallback?.onFailure(error)
+                }
+            })
     }
 
-    private fun checkInputValidation(): ErrorType {
+    private fun checkInputValidation(): @ErrorType Int {
         return when {
-            _childPhoneNumber == null ->
-                ErrorType(ErrorType.MISSING_USER_PHONE_NUMBER)
+            childPhoneNumber == null ->
+                ErrorType.MISSING_CHILD_PHONE_NUMBER
 
-            _childPhoneNumber!!.isEmpty() ->
-                ErrorType(ErrorType.MISSING_USER_PHONE_NUMBER)
+            childPhoneNumber!!.isEmpty() ->
+                ErrorType.MISSING_CHILD_PHONE_NUMBER
 
-            _parentsConnectivityCodes.size < 1 ->
-                ErrorType(ErrorType.MISSING_AT_LEAST_ONE_PARENT_CODE)
+            parentsConnectivityCodes.size < 1 ->
+                ErrorType.MISSING_AT_LEAST_ONE_PARENT_CODE
 
             else ->
-                ErrorType(ErrorType.NOUN)
+                ErrorType.NOUN
         }
     }
 
     interface IParentConnectivityCodesUpdated {
         fun codesUpdated(codes: ArrayList<String>)
+    }
+
+    interface IChildRegistrationSuccess {
+        fun onSuccesses(child: User, parents: ArrayList<User>)
+    }
+
+    interface IChildRegistrationFailure {
+        fun onFailure(error: ChildProtectorException)
     }
 }

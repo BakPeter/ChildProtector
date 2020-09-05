@@ -25,7 +25,8 @@ class AddParentCodeDialog(private val _callBack: IOnParentCodeEntered? = null) :
 
             val resources = resources
             val builder = AlertDialog.Builder(requireContext())
-            return builder.setView(view)
+
+            builder.setView(view)
                 .setCancelable(false)
                 .setPositiveButton(resources.getString(R.string.parent_code_dialog_positive_button_text)) { _, _ ->
                     Log.d(TAG, "CODE = ${_etEnteredCode.text}")
@@ -39,10 +40,6 @@ class AddParentCodeDialog(private val _callBack: IOnParentCodeEntered? = null) :
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy()")
-    }
     interface IOnParentCodeEntered {
         fun onCodeEntered(code: String)
     }

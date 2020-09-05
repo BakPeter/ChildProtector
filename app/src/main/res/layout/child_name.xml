@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvChildName"
+        android:id="@+id/tvChildPhoneNumber"
         android:layout_width="0dp"
         android:paddingEnd="@dimen/app_layout_margins"
         android:layout_height="match_parent"

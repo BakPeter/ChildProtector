@@ -15,8 +15,10 @@ class MainActivity : AppCompatActivity() {
         const val PREFERENCES_FILE_NAME: String = "com.bpapps.childprotector.PREFERENCES_FILE_NAME"
         const val PREFERENCES_IS_REGISTERED: String =
             "com.bpapps.childprotector.PREFERENCES_IS_REGISTERD"
+        const val PREFERENCES_USER_ID = "com.bpapps.childprotector.PREFERENCES_USER_ID"
         const val PREFERENCES_USER_TYPE = "com.bpapps.childprotector.PREFERENCES_USER_TYPE"
-        const val PREFERENCES_CHILD_MONITORED = "com.bpapps.childprotector.PREFERENCES_CHILD_MONITORED"
+        const val PREFERENCES_CHILD_MONITORED =
+            "com.bpapps.childprotector.PREFERENCES_CHILD_MONITORED"
     }
 
     private val viewModel by viewModels<ChildProtectorViewModel>()

@@ -15,7 +15,6 @@ class ChildViewModel : ViewModel() {
         }
 
     private val _repository = ChildProtectorRepository.getInstance()
-    private var _user: User? = _repository!!.getCurrentUser()
 
     private var _isMonitored: Boolean = false
     private var _monitoringChangeStatusCallBack: IMonitoringStatusChanged? = null

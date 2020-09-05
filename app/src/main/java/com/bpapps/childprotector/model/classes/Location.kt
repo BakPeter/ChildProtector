@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.bpapps.childprotector.model.ChildProtectorRepository
 import java.util.*
 
-@Entity(tableName = ChildProtectorRepository.DATA_BASE_TABLE_LOCATIONS_NAME)
+@Entity(tableName = ChildProtectorRepository.SQL_DB_TABLE_LOCATIONS_NAME)
 data class Location(
     @PrimaryKey val id: UUID,
     val userId: UUID,

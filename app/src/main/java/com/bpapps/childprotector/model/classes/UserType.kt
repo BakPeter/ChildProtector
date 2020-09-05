@@ -2,24 +2,12 @@ package com.bpapps.childprotector.model.classes
 
 import androidx.annotation.IntDef
 
-
-class UserType(@Type val type: Int) {
+@Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(UserType.PARENT, UserType.CHILD)
+annotation class UserType() {
     companion object {
-        @Retention(AnnotationRetention.SOURCE)
-        @IntDef(PARENT, CHILD)
-        annotation class Type
-
         const val PARENT = 1
         const val CHILD = 2
-    }
-
-    override fun toString(): String {
-        return when (type) {
-            PARENT ->
-                "PARENT"
-            CHILD ->
-                "CHILD"
-            else -> "NOT_DEFINED"
-        }
     }
 }

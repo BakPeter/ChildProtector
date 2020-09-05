@@ -3,10 +3,7 @@ package com.bpapps.childprotector.view.fragments
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
@@ -16,14 +13,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bpapps.childprotector.R
+import com.bpapps.childprotector.model.classes.ChildProtectorException
 import com.bpapps.childprotector.model.classes.ErrorType
+import com.bpapps.childprotector.model.classes.User
 import com.bpapps.childprotector.model.classes.UserType
 import com.bpapps.childprotector.view.MainActivity
 import com.bpapps.childprotector.view.adapters.ParentsToConnectAdapter
-import com.bpapps.childprotector.view.dialogs.AddParentCodeDialog
-import com.bpapps.childprotector.view.dialogs.ClearInputDataDialog
-import com.bpapps.childprotector.view.dialogs.ErrorDialog
-import com.bpapps.childprotector.view.dialogs.ExitAppDialog
+import com.bpapps.childprotector.view.dialogs.*
 import com.bpapps.childprotector.viewmodel.viewmodels.ChildRegistrationViewModel
 
 private const val TAG = "TAG.ChildRegistrationFragment"
@@ -34,10 +30,9 @@ class ChildRegistrationFragment : Fragment(),
 
     private val viewModel by viewModels<ChildRegistrationViewModel>()
 
-    private lateinit var _etChildPhoneNumber: AppCompatEditText
-    private lateinit var _rvParentsToConnect: RecyclerView
-    private lateinit var _pbChildRegistration: ProgressBar
-    private lateinit var _btnChildRegister: AppCompatButton
+    private lateinit var etChildPhoneNumber: AppCompatEditText
+    private lateinit var rvParentsToConnect: RecyclerView
+    private lateinit var btnChildRegister: AppCompatButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,63 +40,78 @@ class ChildRegistrationFragment : Fragment(),
     ): View? {
         val view = inflater.inflate(R.layout.fragment_child_registration, container, false)
 
-        _etChildPhoneNumber = view.findViewById(R.id.etParentPhoneNumber)
+        etChildPhoneNumber = view.findViewById(R.id.etParentPhoneNumber)
 
-        _rvParentsToConnect = view.findViewById(R.id.rvChildrenToConnect)
-        _rvParentsToConnect.layoutManager = LinearLayoutManager(context)
-        _rvParentsToConnect.adapter =
+        rvParentsToConnect = view.findViewById(R.id.rvChildrenToConnect)
+        rvParentsToConnect.layoutManager = LinearLayoutManager(context)
+        rvParentsToConnect.adapter =
             ParentsToConnectAdapter(viewModel.getParentsCodes(), requireContext())
 
-        _pbChildRegistration = view.findViewById(R.id.pbParentRegistration)
+        btnChildRegister = view.findViewById(R.id.btnParentRegister)
+        btnChildRegister.setOnClickListener { _ ->
 
-        _btnChildRegister = view.findViewById(R.id.btnParentRegister)
-        _btnChildRegister.setOnClickListener { _ ->
-            val childPhoneNumber = _etChildPhoneNumber.text
+            val dialog = WaiteDialog(resources.getString(R.string.registration_in_progress))
+            dialog.show(parentFragmentManager, null)
+
+            val childPhoneNumber = etChildPhoneNumber.text
             viewModel.setChildPhoneNumber(childPhoneNumber.toString())
 
-            val registerResult: ErrorType = viewModel.registerChild()
+            viewModel.registerChild(
+                object : ChildRegistrationViewModel.IChildRegistrationSuccess {
+                    override fun onSuccesses(child: User, parents: ArrayList<User>) {
+                        val sharedPref = activity?.getSharedPreferences(
+                            MainActivity.PREFERENCES_FILE_NAME,
+                            Context.MODE_PRIVATE
+                        )
 
-            viewModel.registerChild().let { it ->
-                if (it.type == ErrorType.NOUN) {
-                    val sharedPref = activity?.getSharedPreferences(
-                        MainActivity.PREFERENCES_FILE_NAME,
-                        Context.MODE_PRIVATE
-                    )
+                        sharedPref?.edit().let {
+                            it!!.putBoolean(MainActivity.PREFERENCES_IS_REGISTERED, true)
+                                .putInt(MainActivity.PREFERENCES_USER_TYPE, UserType.CHILD)
+                                .commit()
+                        }
 
-//                    Handler().post {
-//                        sharedPref?.edit().let { it ->
-//                            it!!.putBoolean(MainActivity.PREFERENCES_IS_REGISTERED, true)
-//                                .putInt(MainActivity.PREFERENCES_USER_TYPE, UserType.CHILD)
-//                                .commit()
-//                        }
-//                    }
+                        dialog.dismiss()
 
-                    sharedPref?.edit().let {
-                        it!!.putBoolean(MainActivity.PREFERENCES_IS_REGISTERED, true)
-                            .putInt(MainActivity.PREFERENCES_USER_TYPE, UserType.CHILD)
-                            .commit()
+`                        val navHostFragment =
+                            activity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment)
+                        navHostFragment?.findNavController()
+                            ?.popBackStack(R.id.splashScreenFragment, false)
                     }
-                    val navHostFragment =
-                        activity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment)
-                    navHostFragment?.findNavController()
-                        ?.popBackStack(R.id.splashScreenFragment, false)
-                } else {
-                    ErrorDialog(getErrorMessage(registerResult)).show(parentFragmentManager, null)
-                }
-            }
+                },
+                object : ChildRegistrationViewModel.IChildRegistrationFailure {
+                    override fun onFailure(error: ChildProtectorException) {
+                        dialog.dismiss()
+                        ErrorDialog(getErrorMessage(error.errorType)).show(
+                            parentFragmentManager,
+                            null
+                        )
+                    }
+                })
         }
 
         return view
     }
 
-    private fun getErrorMessage(errorType: ErrorType): String? {
-        return when (errorType.type) {
+    private fun getErrorMessage(errorType: @ErrorType Int): String? {
+        return when (errorType) {
             ErrorType.NOUN ->
-                null
+                "NOUN"
             ErrorType.MISSING_AT_LEAST_ONE_PARENT_CODE ->
                 resources.getString(R.string.missing_at_least_one_parent_code)
-            ErrorType.MISSING_USER_PHONE_NUMBER ->
+            ErrorType.MISSING_CHILD_PHONE_NUMBER ->
                 resources.getString(R.string.missing_user_phone_number)
+            ErrorType.DEBUG ->
+                "DEBUG"
+            ErrorType.USER_NOT_IN_THE_DATA_BASE ->
+                resources.getString(R.string.parent_connectivity_code_not_in_the_data_base)
+            ErrorType.ERROR_LOADING_CONNECTED_USER ->
+                resources.getString(R.string.error_loading_connected_user)
+            ErrorType.EXTERNAL_ERROR ->
+                "EXTERNAL_ERROR"
+            ErrorType.CONNECTIVITY_CODE_NOT_IN_THE_DATA_BASE ->
+                resources.getString(R.string.connectivity_code_not_in_the_data_base)
+            ErrorType.PHONE_NOT_IN_THE_DATA_BASE ->
+                resources.getString(R.string.phone_not_in_the_data_base)
             else ->
                 null
         }
@@ -132,6 +142,12 @@ class ChildRegistrationFragment : Fragment(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.menu_action_debug -> {
+                viewModel.addParentCode(viewModel.debugConnectivityCode)
+//                etChildPhoneNumber.setText(viewModel.debugConnectivityCode)
+                true
+            }
+
             R.id.menu_action_clear_input -> {
                 clearInput()
                 true
@@ -142,7 +158,7 @@ class ChildRegistrationFragment : Fragment(),
 //                Log.d(TAG, "menu_action_add_parent")
                 AddParentCodeDialog(object : AddParentCodeDialog.IOnParentCodeEntered {
                     override fun onCodeEntered(code: String) {
-                        Log.d(TAG, "code = $code")
+//                        Log.d(TAG, "code = $code")
                         viewModel.addParentCode(code)
                     }
                 }).show(parentFragmentManager, null)
@@ -156,15 +172,13 @@ class ChildRegistrationFragment : Fragment(),
         }
     }
 
-    private fun clearInput(): Boolean {
-        var funRetVal = true
+    private fun clearInput() {
         ClearInputDataDialog(
             "Clear input?",
             "Do you want to clear the entire input?",
             null,
             object : ExitAppDialog.IOnCLickCallBack {
                 override fun onClick(retVal: Boolean) {
-                    funRetVal = retVal
                     if (retVal) {
                         clearAllInputData()
                     }
@@ -173,17 +187,15 @@ class ChildRegistrationFragment : Fragment(),
         ).let {
             it.show(parentFragmentManager, null)
         }
-
-        return funRetVal
     }
 
     private fun clearAllInputData() {
         viewModel.clearParentsCodes(this@ChildRegistrationFragment)
-        _etChildPhoneNumber.text?.clear()
-        Toast.makeText(context, "Data Cleared", Toast.LENGTH_SHORT).show()
+        etChildPhoneNumber.text?.clear()
+//        Toast.makeText(context, "Data Cleared", Toast.LENGTH_SHORT).show()
     }
 
     override fun codesUpdated(codes: ArrayList<String>) {
-        _rvParentsToConnect.adapter?.notifyDataSetChanged()
+        rvParentsToConnect.adapter?.notifyDataSetChanged()
     }
 }

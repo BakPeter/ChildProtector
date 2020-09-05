@@ -65,7 +65,7 @@ class ChildViewFragment : Fragment(), ChildViewModel.IMonitoringStatusChanged {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_child_view, container, false)
 
-        tvChildName = view.findViewById(R.id.tvChildName)
+        tvChildName = view.findViewById(R.id.tvChildPhoneNumber)
         tvChildName.text = viewModel.userName
 
         //TODO ivChildPic = view.findViewById(R.id.ivChildPic) implement after pic adding

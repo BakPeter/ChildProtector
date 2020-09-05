@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "177019919066",
+    "firebase_url": "https://childprotecotor.firebaseio.com",
+    "project_id": "childprotecotor",
+    "storage_bucket": "childprotecotor.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:177019919066:android:0777c9c35f2bd008a6e3e3",
+        "android_client_info": {
+          "package_name": "com.bpapps.childprotector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "177019919066-53dr5972gdgeabn873ssij2bo5k21kfa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bpapps.childprotector",
+            "certificate_hash": "f7534c3c26879402d0053df36b6c9d1694845eb3"
+          }
+        },
+        {
+          "client_id": "177019919066-3oh44pikuutp269mba2mcrt8nf2hh750.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA88A8pXf6t6OAm27HdNKgIanmsveFIZjE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "177019919066-3oh44pikuutp269mba2mcrt8nf2hh750.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

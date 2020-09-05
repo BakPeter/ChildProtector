@@ -44,9 +44,9 @@
         tools:layout="@layout/fragment_parent_registration" />
     <fragment
         android:id="@+id/showParentFragment"
-        android:name="com.bpapps.childprotector.view.fragments.ShowParentFragment"
+        android:name="com.bpapps.childprotector.view.fragments.ParentViewFragment"
         android:label="fragment_show_parent"
-        tools:layout="@layout/fragment_show_parent" />
+        tools:layout="@layout/fragment_view_parent" />
     <fragment
         android:id="@+id/childViewFragment"
         android:name="com.bpapps.childprotector.view.fragments.ChildViewFragment"

@@ -20,10 +20,9 @@ class ParentsToConnectAdapter(
 ) :
     RecyclerView.Adapter<ParentsToConnectAdapter.ParentToConnectViewHolder>() {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParentToConnectViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.parrent_to_connect_item, parent, false)
+            .inflate(R.layout.item_parrent_to_connect, parent, false)
 
         return ParentToConnectViewHolder(view)
     }
@@ -47,5 +46,4 @@ class ParentsToConnectAdapter(
         val ivDeleteConnectivityCode: AppCompatImageView =
             v.findViewById(R.id.imRemoveParentConnectivity)
     }
-
 }
