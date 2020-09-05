@@ -1,5 +1,6 @@
 package com.bpapps.childprotector.model.dbwep
 
+import android.util.Log
 import com.bpapps.childprotector.model.classes.*
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -106,11 +107,11 @@ class FireBaseDatabaseManager private constructor() {
 
     fun loadUsersByConnectivityCodes(
         connectivityCodes: ArrayList<String>,
-        successCallback: IConnectedUsersLoadSuccess?,
-        failureCallback: IConnectedUsersLoadFailure?
+        successCallback: IUsersLoadByConnectivityCodesSuccess?,
+        failureCallback: IUsersLoadByConnectivityCodesFailure?
     ) {
 
-        db.collection(COLLECTION_CONNECTED_USER)
+        db.collection(COLLECTION_USERS)
             .whereIn(FIELD_CONNECTIVITY_CODE, connectivityCodes)
             .get()
             .addOnSuccessListener { querySnapshot ->
@@ -118,41 +119,25 @@ class FireBaseDatabaseManager private constructor() {
                 if (documents.size == 0) {
                     failureCallback?.onFailure(
                         ChildProtectorException(
-                            ErrorType.CONNECTIVITY_CODE_NOT_IN_THE_DATA_BASE,
+                            ErrorType.USER_NOT_IN_THE_DATA_BASE,
                             "",
                             null
                         )
                     )
+
+                    return@addOnSuccessListener
                 }
 
-                val document = documents[0]
-                db.collection(COLLECTION_USERS)
-                    .whereIn(
-                        FIELD_USER_ID,
-                        listOf(document[FIELD_PARENT_ID], document[FIELD_CHILD_ID])
-                    )
-                    .get()
-                    .addOnSuccessListener { querySnapshot ->
-
-                        val users: ArrayList<User> = arrayListOf()
-                        for (document in querySnapshot.documents) {
-                            val user = document.toObject<User>()
-                            user?.let {
-                                users.add(user)
-                            }
-                        }
-
-                        successCallback?.onSuccess(users)
+                val users: ArrayList<User> = arrayListOf()
+                for (document in documents) {
+                    val user = document.toObject<User>()
+                    Log.d(TAG, user.toString())
+                    user?.let {
+                        users.add(user)
                     }
-                    .addOnFailureListener { exception ->
-                        failureCallback?.onFailure(
-                            ChildProtectorException(
-                                ErrorType.EXTERNAL_ERROR,
-                                "",
-                                exception
-                            )
-                        )
-                    }
+                }
+
+                successCallback?.onSuccess(users)
             }
             .addOnFailureListener { exception ->
                 failureCallback?.onFailure(
@@ -229,11 +214,11 @@ class FireBaseDatabaseManager private constructor() {
         fun onRegistered(child: User)
     }
 
-    interface IConnectedUsersLoadSuccess {
+    interface IUsersLoadByConnectivityCodesSuccess {
         fun onSuccess(users: ArrayList<User>)
     }
 
-    interface IConnectedUsersLoadFailure {
+    interface IUsersLoadByConnectivityCodesFailure {
         fun onFailure(error: ChildProtectorException)
     }
 

@@ -1,10 +1,15 @@
 package com.bpapps.childprotector.model
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
-import com.bpapps.childprotector.model.classes.*
+import com.bpapps.childprotector.model.classes.ChildProtectorException
+import com.bpapps.childprotector.model.classes.ChildToConnectInfo
+import com.bpapps.childprotector.model.classes.Location
+import com.bpapps.childprotector.model.classes.User
 import com.bpapps.childprotector.model.dbsql.ChildProtectorDataBase
 import com.bpapps.childprotector.model.dbwep.FireBaseDatabaseManager
+import kotlinx.coroutines.channels.consumesAll
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -44,44 +49,70 @@ class ChildProtectorRepository private constructor(private val context: Context)
     //============================================================================================
 
 
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     fun registerChild(
         parentsConnectivityCodes: ArrayList<String>,
         childPhoneNumber: String,
         registrationCallback: IChildRegistrationFinished?
     ) {
         executor.execute {
-            fireBaseDatabaseManager.loadUsersByConnectivityCodes(
-                parentsConnectivityCodes,
-                object : FireBaseDatabaseManager.IConnectedUsersLoadSuccess {
-                    override fun onSuccess(users: ArrayList<User>) {
-                        fireBaseDatabaseManager.loadUserByPhoneNumber(
-                            childPhoneNumber,
-                            object : FireBaseDatabaseManager.IUserLoadByPhoneNumberSuccess {
-                                override fun onSuccess(user: User) {
-                                    executor.execute {
-                                        childProtectorDao.addUser(user)
-                                        users.forEach { user ->
-                                            childProtectorDao.addUser(user)
-                                        }
-
-                                        registrationCallback?.onRegistrationSuccess(user, users)
-                                    }
-
+            fireBaseDatabaseManager.loadUserByPhoneNumber(
+                childPhoneNumber,
+                object : FireBaseDatabaseManager.IUserLoadByPhoneNumberSuccess {
+                    override fun onSuccess(child: User) {
+                        Log.d(TAG, child.toString())
+                        fireBaseDatabaseManager.loadUsersByConnectivityCodes(
+                            parentsConnectivityCodes,
+                            object : FireBaseDatabaseManager.IUsersLoadByConnectivityCodesSuccess {
+                                override fun onSuccess(parents: ArrayList<User>) {
+                                    registrationCallback?.onRegistrationSuccess(child, parents)
                                 }
                             },
-                            object : FireBaseDatabaseManager.IUserLoadByPhoneNumberFailure {
+                            object : FireBaseDatabaseManager.IUsersLoadByConnectivityCodesFailure {
                                 override fun onFailure(error: ChildProtectorException) {
                                     registrationCallback?.onRegistrationFailure(error)
                                 }
-                            }
-                        )
+
+                            })
                     }
                 },
-                object : FireBaseDatabaseManager.IConnectedUsersLoadFailure {
+                object : FireBaseDatabaseManager.IUserLoadByPhoneNumberFailure {
                     override fun onFailure(error: ChildProtectorException) {
                         registrationCallback?.onRegistrationFailure(error)
                     }
                 })
+//            fireBaseDatabaseManager.loadUsersByConnectivityCodes(
+//                parentsConnectivityCodes,
+//                object : FireBaseDatabaseManager.IConnectedUsersLoadSuccess {
+//                    override fun onSuccess(users: ArrayList<User>) {
+//                        fireBaseDatabaseManager.loadUserByPhoneNumber(
+//                            childPhoneNumber,
+//                            object : FireBaseDatabaseManager.IUserLoadByPhoneNumberSuccess {
+//                                override fun onSuccess(user: User) {
+//                                    executor.execute {
+//                                        childProtectorDao.addUser(user)
+//                                        users.forEach { user ->
+//                                            childProtectorDao.addUser(user)
+//                                        }
+//
+//                                        registrationCallback?.onRegistrationSuccess(user, users)
+//                                    }
+//
+//                                }
+//                            },
+//                            object : FireBaseDatabaseManager.IUserLoadByPhoneNumberFailure {
+//                                override fun onFailure(error: ChildProtectorException) {
+//                                    registrationCallback?.onRegistrationFailure(error)
+//                                }
+//                            }
+//                        )
+//                    }
+//                },
+//                object : FireBaseDatabaseManager.IConnectedUsersLoadFailure {
+//                    override fun onFailure(error: ChildProtectorException) {
+//                        registrationCallback?.onRegistrationFailure(error)
+//                    }
+//                })
         }
     }
 

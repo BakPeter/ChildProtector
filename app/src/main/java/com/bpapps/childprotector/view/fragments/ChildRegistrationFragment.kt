@@ -67,12 +67,13 @@ class ChildRegistrationFragment : Fragment(),
                         sharedPref?.edit().let {
                             it!!.putBoolean(MainActivity.PREFERENCES_IS_REGISTERED, true)
                                 .putInt(MainActivity.PREFERENCES_USER_TYPE, UserType.CHILD)
+                                .putString(MainActivity.PREFERENCES_USER_ID, child._id)
                                 .commit()
                         }
 
                         dialog.dismiss()
 
-`                        val navHostFragment =
+                        val navHostFragment =
                             activity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment)
                         navHostFragment?.findNavController()
                             ?.popBackStack(R.id.splashScreenFragment, false)
