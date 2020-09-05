@@ -14,9 +14,11 @@ import android.util.Log
 import com.bpapps.childprotector.App
 import com.bpapps.childprotector.R
 import com.bpapps.childprotector.model.ChildProtectorRepository
+import com.bpapps.childprotector.model.classes.User
 import com.bpapps.childprotector.view.MainActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.Timestamp
 import java.util.*
 
 
@@ -31,9 +33,17 @@ class AppJobService : JobService() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var pm: PackageManager
     private val repository = ChildProtectorRepository.getInstance()
+    private var user: User? = null
 
     override fun onCreate() {
         super.onCreate()
+        repository.loadRegisteredChild(object : ChildProtectorRepository.IOnRegisteredChildLoaded {
+            override fun onLoaded(child: User) {
+                user = child
+                Log.d(TAG, user.toString())
+            }
+        })
+
         pm = applicationContext.packageManager
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
@@ -73,9 +83,9 @@ class AppJobService : JobService() {
             fusedLocationClient.lastLocation.addOnCompleteListener { task ->
                 if (task.isSuccessful && task.result != null) {
                     Log.d(TAG, "location : ${task.result?.latitude} , ${task.result?.longitude}")
-                    repository?.addLocation(
-                        Date(task.result?.time!!),
-                        UUID.fromString(UUID.randomUUID().toString()),
+                    repository.addLocation(
+                        user!!._id,
+                        Timestamp(Date(task.result?.time!!)),
                         task.result?.latitude!!,
                         task.result?.longitude!!
                     )
@@ -99,10 +109,18 @@ class AppJobService : JobService() {
                     val packageName = appStats.packageName
                     val appInfo = pm.getApplicationInfo(packageName, 0)
                     val appName = pm.getApplicationLabel(appInfo)
+                    val appUsageTime: Double = appStats.totalTimeInForeground.toDouble() / 1000 / 60
 
+                    repository.addAppUsageStats(
+                        user?._id!!,
+                        appName.toString(),
+                        packageName,
+                        appUsageTime,
+                        UPDATE_INTERVAL_MINUTES
+                    )
                     Log.d(
                         TAG,
-                        "query : packageName=${packageName}, appInfo=${appInfo}, appName=${appName}"
+                        "query : packageName=${packageName}, appInfo=${appInfo}, appName=${appName}, appUsageTime=${appUsageTime}"
                     )
                 }
             }

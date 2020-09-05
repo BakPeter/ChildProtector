@@ -2,11 +2,13 @@ package com.bpapps.childprotector.model.dbwep
 
 import android.util.Log
 import com.bpapps.childprotector.model.classes.*
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import java.util.*
 
 class FireBaseDatabaseManager private constructor() {
     private var db: FirebaseFirestore = Firebase.firestore
@@ -18,7 +20,7 @@ class FireBaseDatabaseManager private constructor() {
     ): User {
         val parentRef = db.collection(COLLECTION_USERS).document()
 
-        var newConnectivityCodeRef: DocumentReference =
+        val newConnectivityCodeRef: DocumentReference =
             db.collection(COLLECTION_CONNECTIVITY_CODES).document()
         newConnectivityCodeRef.set(hashMapOf(FIELD_USER_ID to parentRef.id))
 
@@ -86,7 +88,7 @@ class FireBaseDatabaseManager private constructor() {
             }
     }
 
-    fun addConnectedUsers(
+    private fun addConnectedUsers(
         connectivityCode: String,
         parentId: String,
         childId: String,
@@ -182,10 +184,40 @@ class FireBaseDatabaseManager private constructor() {
             }
     }
 
+    fun addLocation(userId: String, date: Timestamp, longitude: Double, latitude: Double) {
+        val locRef = db.collection(COLLECTION_LOCATIONS).document()
+        val location = Location(locRef.id, userId, date, longitude, latitude)
+
+        locRef.set(location)
+    }
+
+    fun addAppUsageStats(
+        userId: String,
+        appName: String,
+        appCreator: String,
+        appUsageTime: Double,
+        updateInterval: Int
+    ) {
+        val usRef = db.collection(COLLECTION_USAGE_STATS).document()
+        val appUsageStatInterval = AppUsageStatInterval(
+            usRef.id,
+            userId,
+            appName,
+            appCreator,
+            appUsageTime,
+            updateInterval
+        )
+
+        usRef.set(appUsageStatInterval)
+    }
+
+
     companion object {
         private const val COLLECTION_USERS = "users"
         private const val COLLECTION_CONNECTED_USER = "connected users"
         private const val COLLECTION_CONNECTIVITY_CODES = "connectivity codes"
+        private const val COLLECTION_LOCATIONS = "locations"
+        private const val COLLECTION_USAGE_STATS = "usage stats"
 
         private const val FIELD_USER_ID = "_userId"
         private const val FIELD_USER_PHONE_NUMBER = "_phoneNumber"

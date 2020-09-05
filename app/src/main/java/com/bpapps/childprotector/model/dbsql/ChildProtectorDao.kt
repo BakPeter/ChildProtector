@@ -1,6 +1,5 @@
 package com.bpapps.childprotector.model.dbsql
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -21,10 +20,12 @@ interface ChildProtectorDao {
     @Insert
     fun addUser(user: User)
 
-    @Query("SELECT * FROM " + ChildProtectorRepository.SQL_DB_TABLE_USERS_NAME + " WHERE _userType = " + UserType.PARENT + " LIMIT 1")
+    @Query("SELECT * FROM " + ChildProtectorRepository.SQL_DB_TABLE_USERS + " WHERE _userType = " + UserType.PARENT + " LIMIT 1")
     fun getRegisteredParent(): User
 
-
-    @Query("SELECT * FROM " + ChildProtectorRepository.SQL_DB_TABLE_USERS_NAME + " WHERE _userType = " + UserType.CHILD)
+    @Query("SELECT * FROM  ${ChildProtectorRepository.SQL_DB_TABLE_USERS} WHERE _userType = ${UserType.CHILD}")
     fun getRegisteredChildren(): List<User>
+
+    @Query("SELECT * FROM ${ChildProtectorRepository.SQL_DB_TABLE_USERS} WHERE _userType = :userType")
+    fun getRegisteredUser(userType: @UserType Int): User
 }

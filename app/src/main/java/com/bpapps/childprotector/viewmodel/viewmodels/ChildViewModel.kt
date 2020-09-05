@@ -1,38 +1,55 @@
 package com.bpapps.childprotector.viewmodel.viewmodels
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.bpapps.childprotector.model.ChildProtectorRepository
-import com.bpapps.childprotector.model.classes.Location
 import com.bpapps.childprotector.model.classes.User
 
-class ChildViewModel : ViewModel() {
+class ChildViewModel : ViewModel(), ChildProtectorRepository.IOnRegisteredChildLoaded {
 
-    val userName: String?
-        get() {
-//            return _user?._name
-            return "Default Child name"
-        }
+    private val repository = ChildProtectorRepository.getInstance()
 
-    private val _repository = ChildProtectorRepository.getInstance()
+    private lateinit var user: User
 
-    private var _isMonitored: Boolean = false
-    private var _monitoringChangeStatusCallBack: IMonitoringStatusChanged? = null
+    init {
+        repository.loadRegisteredChild(this)
+    }
 
-    var monitoringStatus: Boolean = _isMonitored
-        get() = _isMonitored
+    private var childLoadedCallback: IChildLoaded? = null
+
+    private var isMonitored: Boolean = false
+    private var monitoringChangeStatusCallBack: IMonitoringStatusChanged? = null
+
+    var monitoringStatus: Boolean = isMonitored
+        get() = isMonitored
 
     fun changeMonitoringStatus(beingMonitored: Boolean) {
-        _isMonitored = beingMonitored
-        _monitoringChangeStatusCallBack?.monitored(beingMonitored)
+        isMonitored = beingMonitored
+        monitoringChangeStatusCallBack?.monitored(beingMonitored)
     }
 
+    override fun onLoaded(child: User) {
+        user = child
+        childLoadedCallback?.onLoaded(child)
+    }
 
     fun registerMonitoringChangeStatus(callBack: IMonitoringStatusChanged) {
-        _monitoringChangeStatusCallBack = callBack
+        monitoringChangeStatusCallBack = callBack
     }
+
     fun unRegisterMonitoringChangeStatus() {
-        _monitoringChangeStatusCallBack = null
+        monitoringChangeStatusCallBack = null
+    }
+
+    fun registerForChildLoaded(callBack: IChildLoaded) {
+        childLoadedCallback = callBack
+
+        user?.let{
+            childLoadedCallback?.onLoaded(user)
+        }
+    }
+
+    fun unRegisterForChildLoaded() {
+        childLoadedCallback = null
     }
 
 //    fun getLocations(): List<Location> {
@@ -43,4 +60,7 @@ class ChildViewModel : ViewModel() {
         fun monitored(isMonitored: Boolean)
     }
 
+    interface IChildLoaded {
+        fun onLoaded(child: User)
+    }
 }

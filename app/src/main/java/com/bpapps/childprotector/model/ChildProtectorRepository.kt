@@ -3,13 +3,10 @@ package com.bpapps.childprotector.model
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
-import com.bpapps.childprotector.model.classes.ChildProtectorException
-import com.bpapps.childprotector.model.classes.ChildToConnectInfo
-import com.bpapps.childprotector.model.classes.Location
-import com.bpapps.childprotector.model.classes.User
+import com.bpapps.childprotector.model.classes.*
 import com.bpapps.childprotector.model.dbsql.ChildProtectorDataBase
 import com.bpapps.childprotector.model.dbwep.FireBaseDatabaseManager
-import kotlinx.coroutines.channels.consumesAll
+import com.google.firebase.Timestamp
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -39,10 +36,10 @@ class ChildProtectorRepository private constructor(private val context: Context)
     //locations
     fun getLocations(): List<Location> = locations
 
-    fun addLocation(time: Date, userId: UUID, longitude: Double, latitude: Double) {
+    fun addLocation(userId: String, time: Timestamp, longitude: Double, latitude: Double) {
         executor.execute {
-            val location = Location(UUID.randomUUID(), userId, time, longitude, latitude)
-            childProtectorDao.addLocation(location)
+            fireBaseDatabaseManager.addLocation(userId, time, longitude, latitude)
+//            childProtectorDao.addLocation(location)
         }
     }
     //============================================================================================
@@ -65,6 +62,14 @@ class ChildProtectorRepository private constructor(private val context: Context)
                             parentsConnectivityCodes,
                             object : FireBaseDatabaseManager.IUsersLoadByConnectivityCodesSuccess {
                                 override fun onSuccess(parents: ArrayList<User>) {
+
+                                    executor.execute {
+                                        childProtectorDao.addUser(child)
+                                        parents.forEach { parent ->
+                                            childProtectorDao.addUser(parent)
+                                        }
+                                    }
+
                                     registrationCallback?.onRegistrationSuccess(child, parents)
                                 }
                             },
@@ -81,38 +86,6 @@ class ChildProtectorRepository private constructor(private val context: Context)
                         registrationCallback?.onRegistrationFailure(error)
                     }
                 })
-//            fireBaseDatabaseManager.loadUsersByConnectivityCodes(
-//                parentsConnectivityCodes,
-//                object : FireBaseDatabaseManager.IConnectedUsersLoadSuccess {
-//                    override fun onSuccess(users: ArrayList<User>) {
-//                        fireBaseDatabaseManager.loadUserByPhoneNumber(
-//                            childPhoneNumber,
-//                            object : FireBaseDatabaseManager.IUserLoadByPhoneNumberSuccess {
-//                                override fun onSuccess(user: User) {
-//                                    executor.execute {
-//                                        childProtectorDao.addUser(user)
-//                                        users.forEach { user ->
-//                                            childProtectorDao.addUser(user)
-//                                        }
-//
-//                                        registrationCallback?.onRegistrationSuccess(user, users)
-//                                    }
-//
-//                                }
-//                            },
-//                            object : FireBaseDatabaseManager.IUserLoadByPhoneNumberFailure {
-//                                override fun onFailure(error: ChildProtectorException) {
-//                                    registrationCallback?.onRegistrationFailure(error)
-//                                }
-//                            }
-//                        )
-//                    }
-//                },
-//                object : FireBaseDatabaseManager.IConnectedUsersLoadFailure {
-//                    override fun onFailure(error: ChildProtectorException) {
-//                        registrationCallback?.onRegistrationFailure(error)
-//                    }
-//                })
         }
     }
 
@@ -176,12 +149,32 @@ class ChildProtectorRepository private constructor(private val context: Context)
         }
     }
 
+    fun loadRegisteredChild(callBack: IOnRegisteredChildLoaded?) {
+        executor.execute {
+            callBack?.let { it ->
+                it.onLoaded(childProtectorDao.getRegisteredUser(UserType.CHILD))
+            }
+        }
+    }
+
+    fun addAppUsageStats(
+        userId: String,
+        appName: String,
+        appCreator: String,
+        appUsageTime: Double,
+        updateInterval: Int
+    ) {
+        executor.execute {
+            fireBaseDatabaseManager.addAppUsageStats(userId, appName, appCreator, appUsageTime, updateInterval)
+        }
+    }
+
     companion object {
         private const val TAG = "TAG.ChildProtectorRepository"
 
         private const val SQL_DATABASE_NAME = "childProtectorDataBase"
         const val SQL_DB_TABLE_LOCATIONS_NAME = "locations"
-        const val SQL_DB_TABLE_USERS_NAME = "users"
+        const val SQL_DB_TABLE_USERS = "users"
 
         private var repositoryInstance: ChildProtectorRepository? = null
 
@@ -219,5 +212,9 @@ class ChildProtectorRepository private constructor(private val context: Context)
 
     interface IGotChildren {
         fun onGot(children: List<User>)
+    }
+
+    interface IOnRegisteredChildLoaded {
+        fun onLoaded(child: User)
     }
 }

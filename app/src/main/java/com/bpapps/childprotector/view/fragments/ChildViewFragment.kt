@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bpapps.childprotector.R
+import com.bpapps.childprotector.model.classes.User
 import com.bpapps.childprotector.view.MainActivity
 import com.bpapps.childprotector.viewmodel.services.AppJobService
 import com.bpapps.childprotector.viewmodel.viewmodels.ChildViewModel
@@ -33,7 +34,8 @@ import com.bpapps.childprotector.viewmodel.viewmodels.ChildViewModel
 
 private const val TAG = "TAG.ChildViewFragment"
 
-class ChildViewFragment : Fragment(), ChildViewModel.IMonitoringStatusChanged {
+class ChildViewFragment : Fragment(), ChildViewModel.IMonitoringStatusChanged,
+    ChildViewModel.IChildLoaded {
     companion object {
         const val JOB_ID = 101
         const val PERMISSION_LOCATION_CODE = 11
@@ -57,6 +59,9 @@ class ChildViewFragment : Fragment(), ChildViewModel.IMonitoringStatusChanged {
             .let { monitored ->
                 viewModel.changeMonitoringStatus(monitored!!)
             }
+
+        sharedPref?.getString(MainActivity.PREFERENCES_USER_ID, "").let { childId ->
+        }
     }
 
     override fun onCreateView(
@@ -66,20 +71,19 @@ class ChildViewFragment : Fragment(), ChildViewModel.IMonitoringStatusChanged {
         val view = inflater.inflate(R.layout.fragment_child_view, container, false)
 
         tvChildName = view.findViewById(R.id.tvChildPhoneNumber)
-        tvChildName.text = viewModel.userName
 
         //TODO ivChildPic = view.findViewById(R.id.ivChildPic) implement after pic adding
         //ivChildPic = view.findViewById(R.id.ivChildPic)
 
         btnStartMonitoring = view.findViewById(R.id.btnStartMonitoring)
         btnStartMonitoring.setOnClickListener {
-            Log.d(TAG, "btnStartMonitoring onCLick")
+//            Log.d(TAG, "btnStartMonitoring onCLick")
             startJob()
         }
 
         btnStopMonitoring = view.findViewById(R.id.btnStopMonitoring)
         btnStopMonitoring.setOnClickListener {
-            Log.d(TAG, "btnStopMonitoring onCLick")
+//            Log.d(TAG, "btnStopMonitoring onCLick")
             cancelJob()
         }
 
@@ -90,11 +94,11 @@ class ChildViewFragment : Fragment(), ChildViewModel.IMonitoringStatusChanged {
                 resources.getString(R.string.child_is_being_monitored_msg),
                 Toast.LENGTH_LONG
             ).show()
-
-            activity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment)?.let {
-                it.findNavController()
-                    .navigate(R.id.action_childViewFragment_to_watchSqlLocalDataBaseDebugFragment)
-            }
+//
+//            activity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment)?.let {
+//                it.findNavController()
+//                    .navigate(R.id.action_childViewFragment_to_watchSqlLocalDataBaseDebugFragment)
+//            }
         }
 
         return view
@@ -110,11 +114,14 @@ class ChildViewFragment : Fragment(), ChildViewModel.IMonitoringStatusChanged {
 
         viewModel.registerMonitoringChangeStatus(this)
         setIvIsMonitoredVisibility(viewModel.monitoringStatus)
+
+        viewModel.registerForChildLoaded(this)
     }
 
     override fun onStop() {
         super.onStop()
         viewModel.unRegisterMonitoringChangeStatus()
+        viewModel.unRegisterForChildLoaded()
 
         val sharedPref =
             activity?.getSharedPreferences(MainActivity.PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
@@ -232,5 +239,9 @@ class ChildViewFragment : Fragment(), ChildViewModel.IMonitoringStatusChanged {
 
     override fun monitored(isMonitored: Boolean) {
         setIvIsMonitoredVisibility(isMonitored)
+    }
+
+    override fun onLoaded(child: User) {
+        tvChildName.text = child._name
     }
 }

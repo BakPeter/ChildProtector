@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.bpapps.childprotector.model.ChildProtectorRepository
 
-@Entity(tableName = ChildProtectorRepository.SQL_DB_TABLE_USERS_NAME)
+@Entity(tableName = ChildProtectorRepository.SQL_DB_TABLE_USERS)
 data class User(
     @PrimaryKey val _id: String,
     val _phoneNumber: String,
