@@ -143,13 +143,18 @@ class ChildRegistrationFragment : Fragment(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_action_connectivity_code_debug -> {
+            R.id.menu_action_connectivity_code_debug1 -> {
                 viewModel.addParentCode(viewModel.debugConnectivityCode)
 //                etChildPhoneNumber.setText(viewModel.debugConnectivityCode)
                 true
             }
-            R.id.menu_action_child_phone_number_debug -> {
-                etChildPhoneNumber.setText(viewModel.debugPhoneNumber)
+            R.id.menu_action_child_phone_number_debug1 -> {
+                etChildPhoneNumber.setText(viewModel.debugPhoneNumber1)
+                true
+            }
+
+            R.id.menu_action_child_phone_number_debug2 -> {
+                etChildPhoneNumber.setText(viewModel.debugPhoneNumber2)
                 true
             }
 

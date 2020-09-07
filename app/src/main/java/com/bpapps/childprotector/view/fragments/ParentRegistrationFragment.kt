@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -31,6 +32,7 @@ class ParentRegistrationFragment : Fragment(),
     private lateinit var etParentPhoneNumber: AppCompatEditText
     private lateinit var etParentName: AppCompatEditText
     private lateinit var rvChildrenToConnect: RecyclerView
+    private lateinit var tvAddChildMsg: AppCompatTextView
     private lateinit var btnParentRegister: AppCompatButton
     private lateinit var fabAddUser: FloatingActionButton
 
@@ -42,6 +44,8 @@ class ParentRegistrationFragment : Fragment(),
 
         etParentPhoneNumber = view.findViewById(R.id.etParentPhoneNumber)
         etParentName = view.findViewById(R.id.etParentName)
+
+        tvAddChildMsg = view.findViewById(R.id.tvAddChildMsg)
 
         rvChildrenToConnect = view.findViewById(R.id.rvChildrenToConnect)
         rvChildrenToConnect.layoutManager = LinearLayoutManager(requireContext())
@@ -62,7 +66,10 @@ class ParentRegistrationFragment : Fragment(),
             viewModel.registerParent(
                 object : ParentRegistrationViewModel.IOnRegistrationFailure {
                     override fun onFailure(errorType: Int) {
-                        ErrorDialog(getErrorMessage(errorType)).show(parentFragmentManager, null)
+                        ErrorDialog(getErrorMessage(errorType)).show(
+                            parentFragmentManager,
+                            null
+                        )
                     }
                 },
                 object : ParentRegistrationViewModel.IOnRegistrationSuccess {
@@ -71,7 +78,7 @@ class ParentRegistrationFragment : Fragment(),
                         activity?.getSharedPreferences(
                             MainActivity.PREFERENCES_FILE_NAME,
                             Context.MODE_PRIVATE
-                        )?.edit().let { editor ->
+                        )?.edit()?.let { editor ->
                             editor!!.putBoolean(MainActivity.PREFERENCES_IS_REGISTERED, true)
                                 .putInt(MainActivity.PREFERENCES_USER_TYPE, UserType.PARENT)
                                 .putString(MainActivity.PREFERENCES_USER_ID, viewModel.parentId)
@@ -79,14 +86,15 @@ class ParentRegistrationFragment : Fragment(),
                         }
 
                         dialog.dismiss()
-                        Toast.makeText(
-                            requireContext(),
-                            resources.getString(R.string.registration_finished),
-                            Toast.LENGTH_SHORT
-                        ).show()
+//                        Toast.makeText(
+//                            requireContext(),
+//                            resources.getString(R.string.registration_finished),
+//                            Toast.LENGTH_SHORT
+//                        ).show()
 
                         activity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment)
-                            ?.findNavController()?.popBackStack(R.id.splashScreenFragment, false)
+                            ?.findNavController()
+                            ?.popBackStack(R.id.splashScreenFragment, false)
                     }
                 })
         }
@@ -132,9 +140,11 @@ class ParentRegistrationFragment : Fragment(),
                 true
             }
 
-            R.id.menu_action_settings -> {
-                Toast.makeText(requireContext(), "settings", Toast.LENGTH_SHORT).show()
-                true
+            R.id.menu_action_add_debug_data -> {
+                viewModel.addChildInfo(ChildToConnectInfo("AAA", "111"))
+                viewModel.addChildInfo(ChildToConnectInfo("BBB", "222"))
+
+                return true
             }
 
             else ->

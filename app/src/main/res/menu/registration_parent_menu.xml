@@ -9,8 +9,19 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/menu_action_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/menu_settings_action_title"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/menu_action_add_debug_data"
+        android:title="add debug data" />
+
+    <!--    <item-->
+    <!--        android:id="@+id/menu_action_sign_in"-->
+    <!--        android:title="@string/menu_sign_in_action_title" />-->
+
+    <!--    <item-->
+    <!--        android:id="@+id/menu_action_register"-->
+    <!--        android:title="@string/menu_register_action_title" />-->
+    <!--    <item-->
+    <!--        android:id="@+id/menu_action_settings"-->
+    <!--        android:icon="@drawable/ic_settings"-->
+    <!--        android:title="@string/menu_settings_action_title"-->
+    <!--        app:showAsAction="ifRoom" />-->
 </menu>

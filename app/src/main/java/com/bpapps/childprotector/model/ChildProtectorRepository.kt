@@ -20,13 +20,7 @@ class ChildProtectorRepository private constructor(private val context: Context)
         ).build()
     private val childProtectorDao = sqlDatabase.childProtectorDao()
     private val executor: Executor = Executors.newSingleThreadExecutor()
-    private lateinit var locations: List<Location>
 
-    init {
-        executor.execute {
-            locations = childProtectorDao.getLocations()
-        }
-    }
 
     private val fireBaseDatabaseManager: FireBaseDatabaseManager =
         FireBaseDatabaseManager.getInstance()
@@ -34,7 +28,26 @@ class ChildProtectorRepository private constructor(private val context: Context)
     //============================================================================================
     //============================================================================================
     //locations
-    fun getLocations(): List<Location> = locations
+    fun loadLocations(
+        childrenIds: ArrayList<String>,
+        successCallback: IOnLocationsLoadedSuccesses?,
+        failureCallback: IOnLocationLoadedFailure
+    ) {
+        executor.execute {
+            fireBaseDatabaseManager.loadLocations(
+                childrenIds,
+                object : FireBaseDatabaseManager.ILocationsLoadedSuccess {
+                    override fun onLoaded(locations: ArrayList<Location>) {
+                        successCallback?.onLoaded(locations)
+                    }
+                },
+                object : FireBaseDatabaseManager.ILocationsLoadedFailure {
+                    override fun onFailure(error: ChildProtectorException) {
+                        failureCallback?.onFailure(error)
+                    }
+                })
+        }
+    }
 
     fun addLocation(userId: String, time: Timestamp, longitude: Double, latitude: Double) {
         executor.execute {
@@ -46,6 +59,52 @@ class ChildProtectorRepository private constructor(private val context: Context)
     //============================================================================================
 
 
+    //============================================================================================
+    //============================================================================================
+    //UsageStats
+
+    fun loadUsageStats(
+        childrenIds: ArrayList<String>,
+        successCallback: IOnUsageStatsLoadedSuccesses?,
+        failureCallback: IOnUsageStatsLoadedFailure?
+    ) {
+        executor.execute {
+            fireBaseDatabaseManager.loadUsageStats(
+                childrenIds,
+                object : FireBaseDatabaseManager.IUsageStatsLoadSuccess {
+                    override fun onLoaded(usageStats: ArrayList<AppUsageStatInterval>) {
+                        successCallback?.onLoaded(usageStats)
+                    }
+                },
+                object : FireBaseDatabaseManager.IUsageStatsFailure {
+                    override fun onFailure(error: ChildProtectorException) {
+                        failureCallback?.onFailure(error)
+                    }
+                }
+            )
+        }
+    }
+
+    fun addAppUsageStats(
+        userId: String,
+        appName: String,
+        appCreator: String,
+        appUsageTime: Double,
+        updateInterval: Int
+    ) {
+        executor.execute {
+            fireBaseDatabaseManager.addAppUsageStats(
+                userId,
+                appName,
+                appCreator,
+                appUsageTime,
+                updateInterval
+            )
+        }
+    }
+
+    //============================================================================================
+    //============================================================================================
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     fun registerChild(
         parentsConnectivityCodes: ArrayList<String>,
@@ -132,21 +191,6 @@ class ChildProtectorRepository private constructor(private val context: Context)
                 )
             }
         }
-
-    }
-
-    fun getRegisteredParent(callBack: IGotParent) {
-        executor.execute {
-            val parent = childProtectorDao.getRegisteredParent()
-            callBack.onGot(parent)
-        }
-    }
-
-    fun getRegisteredChildren(callBack: IGotChildren) {
-        executor.execute {
-            val children: List<User> = childProtectorDao.getRegisteredChildren()
-            callBack.onGot(children)
-        }
     }
 
     fun loadRegisteredChild(callBack: IOnRegisteredChildLoaded?) {
@@ -157,15 +201,19 @@ class ChildProtectorRepository private constructor(private val context: Context)
         }
     }
 
-    fun addAppUsageStats(
-        userId: String,
-        appName: String,
-        appCreator: String,
-        appUsageTime: Double,
-        updateInterval: Int
-    ) {
+    fun loadRegisteredParent(callBack: IOnRegisteredParentLoaded?) {
         executor.execute {
-            fireBaseDatabaseManager.addAppUsageStats(userId, appName, appCreator, appUsageTime, updateInterval)
+            callBack?.let { it ->
+                it.onLoaded(childProtectorDao.getRegisteredUser(UserType.PARENT))
+            }
+        }
+    }
+
+    fun loadChildren(callback: IOnRegisteredChildrenLoaded?) {
+        executor.execute {
+            callback?.let { it ->
+                it.onLoaded(childProtectorDao.getRegisteredChildren())
+            }
         }
     }
 
@@ -206,15 +254,31 @@ class ChildProtectorRepository private constructor(private val context: Context)
         fun onRegistrationFailure(error: ChildProtectorException)
     }
 
-    interface IGotParent {
-        fun onGot(parent: User)
-    }
-
-    interface IGotChildren {
-        fun onGot(children: List<User>)
-    }
-
     interface IOnRegisteredChildLoaded {
         fun onLoaded(child: User)
+    }
+
+    interface IOnRegisteredParentLoaded {
+        fun onLoaded(parent: User)
+    }
+
+    interface IOnRegisteredChildrenLoaded {
+        fun onLoaded(children: List<User>)
+    }
+
+    interface IOnLocationsLoadedSuccesses {
+        fun onLoaded(locations: ArrayList<Location>)
+    }
+
+    interface IOnLocationLoadedFailure {
+        fun onFailure(error: ChildProtectorException)
+    }
+
+    interface IOnUsageStatsLoadedSuccesses {
+        fun onLoaded(usageStats: ArrayList<AppUsageStatInterval>)
+    }
+
+    interface IOnUsageStatsLoadedFailure {
+        fun onFailure(error: ChildProtectorException)
     }
 }

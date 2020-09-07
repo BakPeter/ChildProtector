@@ -8,7 +8,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import java.util.*
 
 class FireBaseDatabaseManager private constructor() {
     private var db: FirebaseFirestore = Firebase.firestore
@@ -71,7 +70,21 @@ class FireBaseDatabaseManager private constructor() {
                 } else {
                     for (document in documents) {
 //                        Log.d(TAG, "${document.id} => ${document.data}")
-                        addConnectedUsers(parentConnectivityCode, parentId, document.id, null, null)
+                        addConnectedUsers(
+                            parentConnectivityCode,
+                            parentId,
+                            document.id,
+                            object : IConnectedUsersAddingSuccess {
+                                override fun onAdded(connectedUsers: ConnectedUsers?) {
+                                    callBack?.onRegistered(document.toObject<User>())
+                                }
+                            },
+                            object : IConnectedUsersAddingFailure {
+                                override fun onFailed(error: ChildProtectorException) {
+                                }
+                            }
+                        )
+
 
 //                        db.collection(COLLECTION_CONNECTED_USER).document().set(
 //                            hashMapOf(
@@ -103,8 +116,18 @@ class FireBaseDatabaseManager private constructor() {
                     FIELD_CONNECTIVITY_CODE to connectivityCode
                 )
             )
-            .addOnSuccessListener { }
-            .addOnFailureListener { }
+            .addOnSuccessListener {
+                successCallBack?.onAdded(null)
+            }
+            .addOnFailureListener {
+                failureCallback?.onFailed(
+                    ChildProtectorException(
+                        ErrorType.EXTERNAL_ERROR,
+                        "",
+                        null
+                    )
+                )
+            }
     }
 
     fun loadUsersByConnectivityCodes(
@@ -179,6 +202,88 @@ class FireBaseDatabaseManager private constructor() {
                         ErrorType.EXTERNAL_ERROR,
                         exception.message,
                         exception
+                    )
+                )
+            }
+    }
+
+    fun loadLocations(
+        childrenIds: ArrayList<String>,
+        successCallback: ILocationsLoadedSuccess?,
+        failureCallback: ILocationsLoadedFailure?
+    ) {
+        val locRef = db.collection(COLLECTION_LOCATIONS)
+        childrenIds.forEach { childId ->
+            locRef.whereEqualTo(FIELD_USER_ID, childId)
+        }
+
+        locRef.get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot.documents.size == 0) {
+                    failureCallback?.onFailure(
+                        ChildProtectorException(
+                            ErrorType.USER_NOT_IN_THE_DATA_BASE,
+                            "",
+                            null
+                        )
+                    )
+                } else {
+                    val locations = arrayListOf<Location>()
+                    for (document in querySnapshot) {
+                        locations.add(document.toObject<Location>())
+                    }
+
+                    successCallback?.onLoaded(locations)
+                }
+            }
+            .addOnFailureListener { exception ->
+                failureCallback?.onFailure(
+                    ChildProtectorException(
+                        ErrorType.EXTERNAL_ERROR,
+                        "",
+                        exception
+                    )
+                )
+            }
+    }
+
+    fun loadUsageStats(
+        childrenIds: ArrayList<String>,
+        successCallback: IUsageStatsLoadSuccess?,
+        failureCallback: IUsageStatsFailure?
+    ) {
+        val locRef = db.collection(COLLECTION_USAGE_STATS)
+
+        childrenIds.forEach { id ->
+            locRef.whereEqualTo(FIELD_USER_ID, id)
+        }
+
+        locRef.get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot.documents.size == 0) {
+                    failureCallback?.onFailure(
+                        ChildProtectorException(
+                            ErrorType.USER_NOT_IN_THE_DATA_BASE,
+                            "",
+                            null
+                        )
+                    )
+                } else {
+                    val usageStats = arrayListOf<AppUsageStatInterval>()
+
+                    for (document in querySnapshot) {
+                        usageStats.add(document.toObject<AppUsageStatInterval>())
+                    }
+
+                    successCallback?.onLoaded(usageStats)
+                }
+            }
+            .addOnFailureListener { error ->
+                failureCallback?.onFailure(
+                    ChildProtectorException(
+                        ErrorType.EXTERNAL_ERROR,
+                        "",
+                        error
                     )
                 )
             }
@@ -263,10 +368,26 @@ class FireBaseDatabaseManager private constructor() {
     }
 
     interface IConnectedUsersAddingSuccess {
-        fun onAdded(connectedUsers: ConnectedUsers)
+        fun onAdded(connectedUsers: ConnectedUsers?)
     }
 
     interface IConnectedUsersAddingFailure {
         fun onFailed(error: ChildProtectorException)
+    }
+
+    interface ILocationsLoadedSuccess {
+        fun onLoaded(locations: ArrayList<Location>)
+    }
+
+    interface ILocationsLoadedFailure {
+        fun onFailure(error: ChildProtectorException)
+    }
+
+    interface IUsageStatsLoadSuccess {
+        fun onLoaded(usageStats: ArrayList<AppUsageStatInterval>)
+    }
+
+    interface IUsageStatsFailure {
+        fun onFailure(error: ChildProtectorException)
     }
 }

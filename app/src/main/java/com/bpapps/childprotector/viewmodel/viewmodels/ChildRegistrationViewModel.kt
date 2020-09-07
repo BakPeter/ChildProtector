@@ -9,8 +9,9 @@ import com.bpapps.childprotector.model.classes.User
 class ChildRegistrationViewModel : ViewModel() {
 
     //For DEBUG :
-    val debugConnectivityCode = "4AziVsFc0Vj0yXov7pdm"
-    val debugPhoneNumber = "2222"
+    val debugConnectivityCode = "8XT9vx4qhiDsFvquJefL"
+    val debugPhoneNumber1 = "111"
+    val debugPhoneNumber2 = "222"
 
     private val repository = ChildProtectorRepository.getInstance()
     private var callBack: IParentConnectivityCodesUpdated? = null

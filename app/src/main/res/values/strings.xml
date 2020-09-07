@@ -44,6 +44,7 @@
     <string name="child_being_protected">Child Being Protected</string>
     <string name="child_is_being_monitored_msg">CHILD IS BEING MONITORED</string>
     <string name="menu_settings_action_title">settings</string>
+    <string name="menu_sign_in_action_title">Sign in</string>
     <string name="clear_input_title">Clear input?</string>
     <string name="clear_input_msg">Do you want to clear the entire input?</string>
     <string name="child_name">Child Name</string>
@@ -61,5 +62,13 @@
     <string name="error_loading_connected_user">ERROR_LOADING_CONNECTED_USER</string>
     <string name="connectivity_code_not_in_the_data_base">No such cnnectivuty code</string>
     <string name="phone_not_in_the_data_base">Child phone number not in the data base</string>
+    <string name="downloading_data">Dowloading data...</string>
+    <string name="sign_in">Sign In</string>
+    <string name="menu_register_action_title">Register</string>
+    <string name="register">register</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="locations">Locations</string>
+    <string name="apps">Apps</string>
 
 </resources>

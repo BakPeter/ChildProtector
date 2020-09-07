@@ -63,7 +63,7 @@ class SplashScreenFragment : Fragment() {
                             ?.navigate(R.id.action_splashScreenFragment_to_childViewFragment)
                    UserType.PARENT->
                        navHostFragment?.findNavController()
-                           ?.navigate(R.id.action_splashScreenFragment_to_showParentFragment)
+                           ?.navigate(R.id.action_splashScreenFragment_to_parentViewFragment)
                 }
             } else {
                 navHostFragment?.findNavController()

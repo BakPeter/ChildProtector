@@ -7,11 +7,11 @@ import com.bpapps.childprotector.model.classes.Location
 class DataSqlDebugViewModel : ViewModel() {
 
     private val repository = ChildProtectorRepository.getInstance()
-    private var locations: List<Location>
+//    private var locations: List<Location>
 
-    init {
-        locations = repository.getLocations()
-    }
+//    init {
+//        locations = repository.getLocations()
+//    }
 
-    fun getLocations() = locations
+//    fun getLocations() = locations
 }

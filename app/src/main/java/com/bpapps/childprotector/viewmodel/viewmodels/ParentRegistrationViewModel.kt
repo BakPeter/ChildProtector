@@ -65,7 +65,7 @@ class ParentRegistrationViewModel : ViewModel() {
                         isParentRegistered = true
 
                         if (isParentRegistered && areAllChildrenRegistered) {
-                            successCallBack?.onSuccess(registeredParent, registeredChildren)
+                            successCallBack.onSuccess(registeredParent, registeredChildren)
                         }
                     }
                 }
@@ -80,7 +80,7 @@ class ParentRegistrationViewModel : ViewModel() {
                                 areAllChildrenRegistered = true
 
                             if (isParentRegistered && areAllChildrenRegistered) {
-                                successCallBack?.onSuccess(registeredParent, registeredChildren)
+                                successCallBack.onSuccess(registeredParent, registeredChildren)
                             }
                         }
                     }

@@ -13,11 +13,11 @@
             android:id="@+id/action_splashScreenFragment_to_registrationUserTypeFragment"
             app:destination="@id/registrationUserTypeFragment" />
         <action
-            android:id="@+id/action_splashScreenFragment_to_showParentFragment"
-            app:destination="@id/showParentFragment" />
-        <action
             android:id="@+id/action_splashScreenFragment_to_childViewFragment"
             app:destination="@id/childViewFragment" />
+        <action
+            android:id="@+id/action_splashScreenFragment_to_parentViewFragment"
+            app:destination="@id/parentViewFragment" />
     </fragment>
 
     <fragment
@@ -43,11 +43,6 @@
         android:label="@string/registration_parent_type_bar_title"
         tools:layout="@layout/fragment_parent_registration" />
     <fragment
-        android:id="@+id/showParentFragment"
-        android:name="com.bpapps.childprotector.view.fragments.ParentViewFragment"
-        android:label="fragment_show_parent"
-        tools:layout="@layout/fragment_view_parent" />
-    <fragment
         android:id="@+id/childViewFragment"
         android:name="com.bpapps.childprotector.view.fragments.ChildViewFragment"
         android:label="@string/app_name"
@@ -61,5 +56,10 @@
         android:name="com.bpapps.childprotector.view.fragments.WatchSqlLocalDataBaseDebugFragment"
         android:label="fragment_watch_sql_local_data_base_debug"
         tools:layout="@layout/fragment_watch_sql_local_data_base_debug" />
+    <fragment
+        android:id="@+id/parentViewFragment"
+        android:name="com.bpapps.childprotector.view.fragments.ParentViewFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_view_parent" />
 
 </navigation>

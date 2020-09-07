@@ -15,10 +15,13 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/menu_action_connectivity_code_debug"
-        android:title="set debug connectivity code" />
+        android:id="@+id/menu_action_connectivity_code_debug1"
+        android:title="set debug connectivity code1" />
     <item
-        android:id="@+id/menu_action_child_phone_number_debug"
-        android:title="set debug phone number" />
+        android:id="@+id/menu_action_child_phone_number_debug1"
+        android:title="set debug phone number1" />
 
+    <item
+        android:id="@+id/menu_action_child_phone_number_debug2"
+        android:title="set debug phone number2" />
 </menu>
