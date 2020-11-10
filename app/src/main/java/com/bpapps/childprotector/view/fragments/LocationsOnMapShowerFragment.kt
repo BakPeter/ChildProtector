@@ -77,9 +77,5 @@ class LocationsOnMapShowerFragment(private val viewModel: ParentViewViewModel) :
                 )
             )
         }
-
-//        val sydney = LatLng(-34.0, 151.0)
-//        map.addMarker(MarkerOptions().position(sydney).title("marker in sydney"))
-//        map.moveCamera(CameraUpdateFactory.newLatLng((sydney)))
     }
 }

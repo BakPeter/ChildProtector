@@ -14,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import com.bpapps.childprotector.R
 import com.bpapps.childprotector.model.classes.UserType
 import com.bpapps.childprotector.view.MainActivity
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import java.lang.IllegalStateException
 
 private const val TAG = "TAG.SplashScreenFragment"
 
@@ -34,6 +36,9 @@ class SplashScreenFragment : Fragment() {
             Toast.makeText(requireContext(), "tvCreator onClick", Toast.LENGTH_SHORT).show()
         }
 
+        FirebaseCrashlytics.getInstance().log("Higgs-Boson detected! Bailing out")
+        throw RuntimeException("Test Crash") // Force a crash
+//        throw IllegalStateException("crash for crashlytics setup purpose")
         return view
     }
 
